@@ -162,7 +162,7 @@ public class NioPipelineParser {
 					return;
 				}
 			}
-            if(sipStack.sipEventInterceptor != null) {
+            if(sipStack != null && sipStack.sipEventInterceptor != null) {
             	sipStack.sipEventInterceptor.beforeMessage(parsedSIPMessage);
             }
             
@@ -194,7 +194,7 @@ public class NioPipelineParser {
                         messagesOrderingMap.notify();
                     }
                 }
-                if(sipStack.sipEventInterceptor != null) {
+                if(sipStack != null && sipStack.sipEventInterceptor != null) {
                 	sipStack.sipEventInterceptor.afterMessage(message);
                 }
             }
@@ -422,6 +422,26 @@ public class NioPipelineParser {
         this(sipStack, mhandler, false, maxMsgSize);
     }
 
+    /**
+     * This is the constructor for stackless mode.
+     *
+     * @param mhandler
+     *            a SIPMessageListener implementation that provides the message
+     *            handlers to handle correctly and incorrectly parsed messages.
+     * @param maxMsgSize
+     *            The maximum allowed size of a SIP message.
+     */
+
+    public NioPipelineParser(SIPMessageListener mhandler,
+            int maxMsgSize) {
+        this();
+        this.sipStack = null;
+        this.smp = new StringMsgParser();
+        this.sipMessageListener = sipMessageListener;
+        this.maxMessageSize = maxMessageSize;
+        this.sizeCounter = this.maxMessageSize;
+    }
+    
     /**
      * Add a class that implements a SIPMessageListener interface whose methods
      * get called * on successful parse and error conditons.
